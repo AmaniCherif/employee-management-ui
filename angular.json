@@ -27,6 +27,7 @@
             ],
             "scripts": []
           },
+          
           "configurations": {
             "production": {
               "budgets": [
@@ -62,6 +63,10 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "angulardemo:build",
+            "proxyConfig": "src/proxy.conf.json"
+  }, 
           "configurations": {
             "production": {
               "browserTarget": "angulardemo:build:production"
@@ -71,11 +76,13 @@
             }
           },
           "defaultConfiguration": "development"
+          
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
             "browserTarget": "angulardemo:build"
+            
           }
         },
         "test": {
@@ -90,6 +97,7 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.css",
               "src/styles.css"
             ],
             "scripts": []
@@ -97,5 +105,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "6a6b49ed-762c-4a14-8b97-0684684d0cfc"
   }
 }
