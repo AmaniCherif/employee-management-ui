@@ -1,0 +1,196 @@
+<h2> Manage Contracts </h2>
+<form class="form-inline my-2 my-lg-0">
+   <input type="text" name="searchText" [(ngModel)]="searchText" placeholder="Search contrats...">
+</form>
+<head>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <style>
+       body{
+        background: #AAAEF8 ;
+       } 
+       table{
+        min-width: max-content;
+        border-collapse: separate;
+       
+       }
+       table th{
+        position:sticky;
+        top:0px;
+        background: gray;
+       }
+       .tbl-fixed{
+        overflow-x: scroll;
+        overflow-y: scroll;
+        height: fit-content;
+        max-height: 70vh;
+        margin-top: 40px;
+        
+       }
+    </style>
+  </head>
+
+
+<div class="container tbl-container" id="main-container">
+    <div class="row tbl-fixed">
+        <button type="button" class="btn btn-success" (click)="onOpenModal(contrat,'add')">Add</button>
+        <table class = "table table-striped">
+            <thead>   
+                <tr>
+                    <th> reference</th>
+                    <th> dateDebut </th>
+                    <th> dateFin</th>
+                    <th> typeContrat </th>
+                    <th> telephone</th>
+                    <th> salaire</th>
+                    <th> employee Id</th>
+                </tr>
+            </thead>
+            
+            <tbody>
+               
+                <tr *ngFor = "let contrat of contrats | filter:searchText" >
+                  
+                    <td> {{ contrat.reference }} </td>
+                    <td> {{ contrat.dateDebut }} </td>
+                    <td> {{ contrat.dateFin }} </td>
+                    <td> {{ contrat.typeContrat }} </td>
+                    <td> {{ contrat.telephone }} </td>
+                    <td> {{ contrat.salaire }} </td>
+                    <td> {{ contrat.employeeId }} </td>
+                    <td>
+                        
+                     <div class="float-right btn-group btn-group-sm">
+                        <a (click)="onOpenModal(contrat,'update')" class="btn btn-primary tooltips" data-placement="top" data-toggle="tooltip" data-original-title="update"><i class="fa fa-pencil"></i> </a>
+                        <a (click)="onOpenModal(contrat,'delete')" class="btn btn-secondary tooltips" data-placement="top" data-toggle="tooltip" data-original-title="delete"><i class="fa fa-times"></i></a>
+                    </div>
+                </td>
+                </tr>
+            </tbody>
+            
+        </table>
+    </div>
+    <!-- Add Contrat Modal -->
+<div class="modal fade" id="addContratModal" tabindex="-1" role="dialog" aria-labelledby="addContratModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title" id="addContratModalLabel">Add Contrat</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+            <form #addForm="ngForm" (ngSubmit)="onAddContrat(addForm)">
+              <div class="form-group">
+                  <label for="name">reference</label>
+                  <input type="text" ngModel name="reference" class="form-control" id="reference" placeholder="reference" required>
+               </div>
+            <div class="form-group">
+               <label for="dateDebut">dateDebut</label>
+               <input type="date" ngModel name="dateDebut" class="form-control" id="dateDebut" placeholder="dateDebut" required>
+            </div>
+            <div class="form-group">
+               <label for="dateFin">dateFin</label>
+               <input type="date" ngModel name="dateFin" class="form-control" id="dateFin" placeholder="dateFin" required>
+            </div>
+            <div class="form-group">
+               <label for="typeContrat">typeContrat </label>
+               <input type="text" ngModel name="typeContrat" class="form-control" id="typeContrat" placeholder="typeContrat" required>
+            </div>
+            <div class="form-group">
+               <label for="phone">telephone</label>
+               <input type="text" ngModel name="telephone" class="form-control" id="telephone" placeholder="telephone" required>
+            </div>
+            <div class="form-group">
+               <label for="salaire">salaire</label>
+               <input type="text" ngModel name="salaire" class="form-control" id="salaire" placeholder="salaire" required>
+            </div>
+            <div class="form-group">
+               <label for="employe">employee</label>
+               <select class="form-control" name="employeeId" [(ngModel)]="selected" placeholder="employe" required>
+                      <option *ngFor="let employee of employees" [value]="employee.id">
+                        {{employee.prenom}} {{employee.nom}}
+                      </option> 
+                </select>
+            </div>
+            
+            <div class="modal-footer">
+               <button type="button" id="add-contrat-form" class="btn btn-secondary" data-dismiss="modal">Close</button>
+               <button [disabled]="addForm.invalid" type="submit" class="btn btn-primary" >Save changes</button>
+            </div>
+            </form>
+         </div>
+      </div>
+    </div>
+    </div>
+      <!-- Edit Modal -->
+<div class="modal fade" id="updateContratModal" tabindex="-1" role="dialog" aria-labelledby="contratEditModalLabel" aria-hidden="true">
+   <div class="modal-dialog" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title" id="updateContratModalLabel">Edit Contrat {{editContrat?.reference}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+            <form #editForm="ngForm">
+               <div class="form-group">
+                  <label for="name">reference</label>
+                  <input type="number" ngModel="{{editContrat?.reference}}" name="reference" class="form-control" id="reference" aria-describedby="emailHelp" placeholder="reference">
+               </div>
+               <div class="form-group">
+                  <label for="dateDebut">dateDebut</label>
+                  <input type="date" ngModel="{{editContrat?.dateDebut}}" name="dateDebut" class="form-control" id="dateDebut" placeholder="dateDebut">
+               </div>
+               <div class="form-group">
+                   <label for="dateFin">dateFin</label>
+                   <input type="text" ngModel="{{editContrat?.dateFin}}" name="dateFin" class="form-control" id="dateFin" aria-describedby="emailHelp" placeholder="dateFin">
+                </div>
+               <div class="form-group">
+                  <label for="typeContrat">typeContrat</label>
+                  <input type="text" ngModel="{{editContrat?.typeContrat}}" name="typeContrat" class="form-control" id="typeContrat" placeholder="typeContrat">
+               </div>
+               <div class="form-group">
+                  <label for="telephone">telephone</label>
+                  <input type="text" ngModel="{{editContrat?.telephone}}" name="telephone" class="form-control" id="telephone" name="telephone" placeholder="telephone">
+               </div>
+               <div class="form-group">
+                  <label for="salaire">salaire</label>
+                  <input type="text" ngModel="{{editContrat?.salaire}}" name="salaire" class="form-control" id="salaire" placeholder="salaire">
+               </div>
+               <div class="form-group">
+                  <label for="employeeId">employee Id</label>
+                  <input type="text" ngModel="{{editContrat?.employeeId}}" name="employeeId" class="form-control" id="employeeId" placeholder="Employee Id">
+               </div>
+               <div class="modal-footer">
+                  <button type="button" id="" data-dismiss="modal" class="btn btn-secondary">Close</button>
+                  <button (click)="onUpdateContrat(editForm.value)" data-dismiss="modal" class="btn btn-primary" >Save changes</button>
+               </div>
+            </form>
+         </div>
+      </div>
+   </div>
+ </div>
+ <!-- Delete Modal -->
+ <div class="modal fade" id="deleteContratModal" tabindex="-1" role="dialog" aria-labelledby="deleteModelLabel" aria-hidden="true">
+   <div class="modal-dialog" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title" id="deleteModelLabel">Delete Contrat</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+            <p>Are you sure you want to delete this contract {{deleteContrat?.reference}}?</p>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+               <button (click)="onDeleteContrat(deleteContrat?.reference)" class="btn btn-danger" data-dismiss="modal">Yes</button>
+            </div>
+         </div>
+      </div>
+   </div>
+ </div>
